@@ -3,7 +3,7 @@ package com.example.csc557_oct22.remote;
 public class ApiUtils {
 
     // REST API server URL
-    public static final String BASE_URL = "https://csc557haziq.000webhostapp.com/prestige/";
+    public static final String BASE_URL = "https://csc557haziq.000webhostapp.com/consultation-api/";
 
     // return UserService instance
     public static UserService getUserService() {
