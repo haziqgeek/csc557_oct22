@@ -10,4 +10,9 @@ public class ApiUtils {
         return RetrofitClient.getClient(BASE_URL).create(UserService.class);
     }
 
+    // return AppointmentService instance
+    public static AppointmentService getAppointmentService() {
+        return RetrofitClient.getClient(BASE_URL).create(AppointmentService.class);
+    }
+
 }

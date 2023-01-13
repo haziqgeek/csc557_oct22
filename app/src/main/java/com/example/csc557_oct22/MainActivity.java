@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         btnApptList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // forward user to BookListActivity
+                // forward user to ViewRequestActivity
                 Intent intent = new Intent(context, ViewRequestActivity.class);
                 startActivity(intent);
             }

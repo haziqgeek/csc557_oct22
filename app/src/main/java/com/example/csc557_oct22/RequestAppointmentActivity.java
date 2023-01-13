@@ -1,14 +1,278 @@
 package com.example.csc557_oct22;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.example.csc557_oct22.adapter.LecturerSpinnerAdapter;
+import com.example.csc557_oct22.model.Appointment;
+import com.example.csc557_oct22.model.SharedPrefManager;
+import com.example.csc557_oct22.model.User;
+import com.example.csc557_oct22.remote.ApiUtils;
+import com.example.csc557_oct22.remote.AppointmentService;
+import com.example.csc557_oct22.remote.UserService;
+
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RequestAppointmentActivity extends AppCompatActivity {
+
+    private EditText txtReason;
+    private Spinner spLecturer;
+    private static TextView tvDate; // static because need to be accessed by DatePickerFragment
+    private static TextView tvTime; // static because need to be accessed by TimePickerFragment
+
+    private static LocalDate consDate; // static because need to be accessed by DatePickerFragment
+    private static LocalTime consTime; // static because need to be accessed by TimePickerFragment
+
+    private Context context;
+
+    /**
+     * Date picker fragment class
+     * Reference: https://developer.android.com/guide/topics/ui/controls/pickers
+     */
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            // Do something with the date chosen by the user
+
+            // create a date object from selected year, month and day
+            consDate = LocalDate.of(year, month + 1, day);
+
+            // display in the label beside the button with specific date format
+            tvDate.setText(consDate.toString());
+        }
+    }
+
+    /**
+     * Time picker fragment class
+     * Reference: https://developer.android.com/guide/topics/ui/controls/pickers
+     */
+    public static class TimePickerFragment extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            // Do something with the time chosen by the user
+
+            // create a time object from selected hour and minute
+            consTime = LocalTime.of(hourOfDay, minute);
+
+            // display in the label beside the button with specific time format
+            tvTime.setText(consTime.toString());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_appointment);
+
+        // store context
+        context = this;
+
+        // get view objects references
+        txtReason = findViewById(R.id.txtReason);
+        spLecturer = findViewById(R.id.spLecturer);
+        tvDate = findViewById(R.id.tvDate);
+        tvTime = findViewById(R.id.tvTime);
+
+        // set default consDate value, get current date
+        consDate = LocalDate.now();
+        // display in the label beside the button with specific date format
+        tvDate.setText(consDate.toString());
+
+        // set default consTime value, get current time
+        consTime = LocalTime.now();
+        // display in the label beside the button with specific time format
+        tvTime.setText(consTime.toString());
+
+        // retrieved list of user and set to spinner
+        // get user info from SharedPreferences
+        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+        // send request to add new book to the REST API
+        UserService userService = ApiUtils.getUserService();
+        Call<List<User>> call = userService.getAllLecturers(user.getToken());
+        // execute
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+
+                // for debug purpose
+                Log.d("MyApp:", "Response: " + response.raw().toString());
+
+                // invalid session?
+                if (response.code() == 401)
+                    displayAlert("Invalid session. Please re-login");
+
+                // consultation added successfully?
+                List<User> lecturers = response.body();
+                if (lecturers != null) {
+                    // display message
+                    Toast.makeText(getApplicationContext(),
+                            "retrieved " + lecturers.size() + " lecturers.",
+                            Toast.LENGTH_LONG).show();
+
+                    // set to spinner
+                    LecturerSpinnerAdapter lsa = new LecturerSpinnerAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, lecturers);
+                    spLecturer.setAdapter(lsa);
+                } else {
+                    displayAlert("Retrieve users failed.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                displayAlert("Error [" + t.getMessage() + "]");
+                // for debug purpose
+                Log.d("MyApp:", "Error: " + t.getCause().getMessage());
+            }
+        });
+
+    }
+
+    /**
+     * Called when pick date button is clicked. Display a date picker dialog
+     * @param v
+     */
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    /**
+     * Called when pick time button is clicked. Display a time picker dialog
+     * @param v
+     */
+    public void showTimePickerDialog(View v) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    /**
+     * Called when Request New Consultation button is clicked
+     * @param v
+     */
+    public void addNewAppointment(View v) {
+        // get values in form
+        String reason = txtReason.getText().toString();
+        User lecturer = (User)spLecturer.getSelectedItem();
+        User student = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+        String consDateStr = consDate.toString();
+        String consTimeStr = consTime.toString();
+
+        // create an Appointment object
+        // set id to 0, it will be automatically generated by the db later
+        Appointment a = new Appointment(0, student.getId(), lecturer.getId(), reason, "New", consDateStr, consTimeStr);
+
+        // send request to add new book to the REST API
+        AppointmentService appointmentService = ApiUtils.getAppointmentService();
+        Call<Appointment> call = appointmentService.addAppointment(student.getToken(), a);
+
+        // execute
+        call.enqueue(new Callback<Appointment>() {
+            @Override
+            public void onResponse(Call<Appointment> call, Response<Appointment> response) {
+
+                // for debug purpose
+                Log.d("MyApp:", "Response: " + response.raw().toString());
+
+                // invalid session?
+                if (response.code() == 401)
+                    displayAlert("Invalid session. Please re-login");
+
+                // book added successfully?
+                Appointment addedAppointment = response.body();
+                if (addedAppointment != null) {
+                    // display message
+                    Toast.makeText(context,
+                             "Your consultation request is successfully sent to " + lecturer.getUsername() + " .",
+                            Toast.LENGTH_LONG).show();
+
+                    // end this activity and forward user to BookListActivity
+                    Intent intent = new Intent(context, ViewRequestActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    displayAlert("Request New Consultation failed.\n\n" + a.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Appointment> call, Throwable t) {
+                displayAlert("Error [" + t.getMessage() + "]");
+                // for debug purpose
+                Log.d("MyApp:", "Error: " + t.getCause().getMessage());
+            }
+        });
+    }
+
+    /**
+     * Displaying an alert dialog with a single button
+     * @param message - message to be displayed
+     */
+    public void displayAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

@@ -19,7 +19,7 @@ public interface AppointmentService {
     @GET("api/appointment/{id}")
     Call<Appointment> getAppointment(@Header("api-key") String api_key, @Path("id") int id);
 
-    /*** Add book by sending a single Book JSON* @return book object*/
+    /*** Add appointment by sending a single Appointment JSON* @return book object*/
     @POST("api/appointment")
     Call<Appointment> addAppointment(@Header ("api-key") String apiKey, @Body Appointment appointment);
 
@@ -27,6 +27,6 @@ public interface AppointmentService {
      * Delete book based on the id
      * @return DeleteResponse object
      */
-    @POST("api/book/delete/{id}")
+    @POST("api/appointment/delete/{id}")
     Call<DeleteResponse> deleteAppointment(@Header ("api-key") String apiKey, @Path("id") int id);
 }

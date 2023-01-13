@@ -5,12 +5,29 @@ import java.time.LocalTime;
 
 public class Appointment {
     private int id;
+    private User student;
+    private int student_id;
+    private User lecturer;
+    private int lecturer_id;
     private String reason;
-    private LocalDate date;
-    private LocalTime time;
     private String status;
-    private int stuId;
-    private int lectId;
+    private String date;
+    private String time;
+
+    public Appointment() {
+    }
+
+    public Appointment(int id, int student_id, int lecturer_id, String reason, String status, String date, String time) {
+        this.id = id;
+        this.student = student;
+        this.student_id = student_id;
+        this.lecturer = lecturer;
+        this.lecturer_id = lecturer_id;
+        this.reason = reason;
+        this.status = status;
+        this.date = date;
+        this.time = time;
+    }
 
     public int getId() {
         return id;
@@ -18,6 +35,46 @@ public class Appointment {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getStudent_id() {
+        return student_id;
+    }
+
+    public void setStudent_id(int student_id) {
+        this.student_id = student_id;
+    }
+
+    public User getLecturer() {
+        return lecturer;
+    }
+
+    public void setLecturer(User lecturer) {
+        this.lecturer = lecturer;
+    }
+
+    public User getStudent() {
+        return student;
+    }
+
+    public void setStudent(User student) {
+        this.student = student;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public int getLecturer_id() {
+        return lecturer_id;
+    }
+
+    public void setLecturer_id(int lecturer_id) {
+        this.lecturer_id = lecturer_id;
     }
 
     public String getReason() {
@@ -28,22 +85,6 @@ public class Appointment {
         this.reason = reason;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -52,19 +93,17 @@ public class Appointment {
         this.status = status;
     }
 
-    public int getStuId() {
-        return stuId;
-    }
-
-    public void setStuId(int stuId) {
-        this.stuId = stuId;
-    }
-
-    public int getLectId() {
-        return lectId;
-    }
-
-    public void setLectId(int lectId) {
-        this.lectId = lectId;
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "id=" + id +
+                ", student_id=" + student_id +
+                ", lecturer=" + lecturer +
+                ", lecturer_id=" + lecturer_id +
+                ", reason='" + reason + '\'' +
+                ", status='" + status + '\'' +
+                ", date=" + date +
+                ", time=" + time +
+                '}';
     }
 }
