@@ -32,18 +32,29 @@ public class MainActivity extends AppCompatActivity {
         // set the textview to display username
         txtHello.setText("Hello " + user.getUsername() + " !");
 
-        // assign action to Book List button
-        /*
-        Button btnBookList = findViewById(R.id.btnBookList);
-        btnBookList.setOnClickListener(new View.OnClickListener() {
+        // assign action to Request New Consultation button
+
+        Button btnAddAppt = findViewById(R.id.btnAddAppt);
+        btnAddAppt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // forward user to BookListActivity
-                Intent intent = new Intent(context, BookListActivity.class);
+                Intent intent = new Intent(context, RequestAppointmentActivity.class);
                 startActivity(intent);
             }
         });
-         */
+
+        // assign action to Consultation List button
+
+        Button btnApptList = findViewById(R.id.btnApptList);
+        btnApptList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // forward user to BookListActivity
+                Intent intent = new Intent(context, ViewRequest.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void doLogout(View view) {
