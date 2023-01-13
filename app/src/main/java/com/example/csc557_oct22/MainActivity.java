@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         btnAddAppt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // forward user to BookListActivity
+                // forward user to RequestAppointmentActivity
                 Intent intent = new Intent(context, RequestAppointmentActivity.class);
                 startActivity(intent);
             }
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // forward user to BookListActivity
-                Intent intent = new Intent(context, ViewRequest.class);
+                Intent intent = new Intent(context, ViewRequestActivity.class);
                 startActivity(intent);
             }
         });
