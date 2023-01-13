@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText edtUsername;
     EditText edtPassword;
     Button btnLogin;
+    ProgressBar progressBar;
 
     UserService userService;
 
@@ -49,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         edtUsername = findViewById(R.id.edtUsername);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        progressBar = findViewById(R.id.progressBar);
 
         // get UserService instance
         userService = ApiUtils.getUserService();
@@ -65,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (validateLogin(username, password)) {
                     // do login
                     doLogin(username, password);
+                    progressBar.setVisibility(ProgressBar.VISIBLE);
                 }
             }
         });
@@ -104,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) {
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
 
                 // received reply from REST API
                 if (response.isSuccessful()) {
