@@ -50,15 +50,6 @@ public class ViewRequestActivity extends AppCompatActivity {
         //register for context menu
         registerForContextMenu(viewList);
 
-        //update listview
-        updateListView();
-
-    }
-
-        /**
-         * Fetch data for ListView
-         */
-        private void updateListView() {
 
         // get user info from SharedPreferences
         User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
@@ -103,6 +94,9 @@ public class ViewRequestActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getMenuInflater();
