@@ -258,6 +258,7 @@ public class RequestAppointmentActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * Displaying an alert dialog with a single button
      * @param message - message to be displayed
