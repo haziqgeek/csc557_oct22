@@ -7,28 +7,25 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.csc557_oct22.model.User;
-
 import java.util.List;
 
-public class LecturerSpinnerAdapter extends ArrayAdapter<User> {
-
+public class TimeSpinnerAdapter extends ArrayAdapter<String> {
     // Your sent context
     private Context context;
     // Your custom values for the spinner (User)
-    private List<User> lecturers;
+    private List<String> time;
 
-    public LecturerSpinnerAdapter(Context context, int textViewResourceId, List<User> lecturers) {
-        super(context, textViewResourceId, lecturers);
+    public TimeSpinnerAdapter(Context context, int textViewResourceId, List<String> time) {
+        super(context, textViewResourceId, time);
         this.context = context;
-        this.lecturers = lecturers;
+        this.time = time;
     }
 
     @Override
-    public int getCount() { return lecturers.size(); }
+    public int getCount() { return time.size(); }
 
     @Override
-    public User getItem(int position) { return lecturers.get(position); }
+    public String getItem(int position) { return time.get(position); }
 
     @Override
     public long getItemId(int position) { return position; }
@@ -42,7 +39,7 @@ public class LecturerSpinnerAdapter extends ArrayAdapter<User> {
         label.setTextColor(Color.BLACK);
         // Then you can get the current item using the values array (Users array) and the current position
         // You can NOW reference each method you has created in your bean object (User class)
-        label.setText(lecturers.get(position).getName());
+        label.setText(time.get(position));
 
         // And finally return your dynamic (or custom) view for each spinner item
         return label;
@@ -55,7 +52,7 @@ public class LecturerSpinnerAdapter extends ArrayAdapter<User> {
                                 ViewGroup parent) {
         TextView label = (TextView) super.getDropDownView(position, convertView, parent);
         label.setTextColor(Color.BLACK);
-        label.setText(lecturers.get(position).getName());
+        label.setText(time.get(position));
 
         return label;
     }

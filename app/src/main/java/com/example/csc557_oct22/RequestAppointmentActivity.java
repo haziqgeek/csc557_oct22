@@ -22,6 +22,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.csc557_oct22.adapter.LecturerSpinnerAdapter;
+import com.example.csc557_oct22.adapter.TimeSpinnerAdapter;
 import com.example.csc557_oct22.model.Appointment;
 import com.example.csc557_oct22.model.SharedPrefManager;
 import com.example.csc557_oct22.model.User;
@@ -47,7 +48,8 @@ public class RequestAppointmentActivity extends AppCompatActivity {
     private EditText txtReason;
     private Spinner spLecturer;
     private static TextView tvDate; // static because need to be accessed by DatePickerFragment
-    private static TextView tvTime; // static because need to be accessed by TimePickerFragment
+    //private static TextView tvTime; // static because need to be accessed by TimePickerFragment
+    private Spinner spTime;
 
     private static LocalDate consDate; // static because need to be accessed by DatePickerFragment
     private static LocalTime consTime; // static because need to be accessed by TimePickerFragment
@@ -88,6 +90,7 @@ public class RequestAppointmentActivity extends AppCompatActivity {
      * Time picker fragment class
      * Reference: https://developer.android.com/guide/topics/ui/controls/pickers
      */
+    /*
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
 
@@ -114,6 +117,8 @@ public class RequestAppointmentActivity extends AppCompatActivity {
         }
     }
 
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +131,7 @@ public class RequestAppointmentActivity extends AppCompatActivity {
         txtReason = findViewById(R.id.txtReason);
         spLecturer = findViewById(R.id.spLecturer);
         tvDate = findViewById(R.id.tvDate);
-        tvTime = findViewById(R.id.tvTime);
+        //tvTime = findViewById(R.id.tvTime);
 
         // set default consDate value, get current date
         consDate = LocalDate.now();
@@ -136,7 +141,7 @@ public class RequestAppointmentActivity extends AppCompatActivity {
         // set default consTime value, get current time
         consTime = LocalTime.now();
         // display in the label beside the button with specific time format
-        tvTime.setText(consTime.toString());
+        // tvTime.setText(consTime.toString());
 
         // retrieved list of user and set to spinner
         // get user info from SharedPreferences
@@ -195,10 +200,12 @@ public class RequestAppointmentActivity extends AppCompatActivity {
      * Called when pick time button is clicked. Display a time picker dialog
      * @param v
      */
+    /*
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
+     */
 
     /**
      * Called when Request New Consultation button is clicked

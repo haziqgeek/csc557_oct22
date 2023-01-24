@@ -94,26 +94,19 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:text="Consultation Time:" />
 
-            <TextView
-                android:id="@+id/tvTime"
+            <Spinner
+                android:id="@+id/spTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:text="HH:MI:SS" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.35"
-                android:onClick="showTimePickerDialog"
-                android:text="Pick Time" />
-
+                android:layout_weight="0.75"
+                android:entries="@array/timeslot" />
         </LinearLayout>
 
         <LinearLayout
