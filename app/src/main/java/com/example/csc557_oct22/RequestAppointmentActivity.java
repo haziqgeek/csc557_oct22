@@ -288,6 +288,7 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
         });
     }
 
+
     /**
      * Displaying an alert dialog with a single button
      * @param message - message to be displayed
