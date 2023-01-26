@@ -118,13 +118,17 @@ public class LoginActivity extends AppCompatActivity {
                         // successful login. server replies a token value
                         displayToast("Login successful");
                         displayToast("Token: " + user.getToken());
+                        displayToast("User Role: " + user.getRole());
 
                         // store value in Shared Preferences
                         SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
 
                         // forward user to MainActivity
                         finish();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        if (user.getRole() == "student")
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        else
+                            startActivity(new Intent(getApplicationContext(), ViewRequestActivityLecturer.class));
                     }
                 }
                 else if (response.errorBody() != null){
