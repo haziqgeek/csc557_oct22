@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,18 @@ public class AppointmentDetailActivity extends AppCompatActivity {
                 Toast.makeText(null, "Error connecting", Toast.LENGTH_LONG).show();
             }
         });
+        // enable back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish(); // terminate this Activity and go back to caller
+                return true;
+        }
 
+        // if menu clicked not in list, call the original superclass method
+        return super.onOptionsItemSelected(item);
     }
 }
