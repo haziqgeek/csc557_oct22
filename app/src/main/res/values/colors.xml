@@ -6,5 +6,15 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="blueBlack">#030D3A</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="peach">#E8E4BD</color>
+
+    <color name="start_color">#d9a7c7</color>
+    <color name="end_color">#fffcdc</color>
+
+    <color name="start_color2">#C6FFDD</color>
+    <color name="mid_color2">#FBD786</color>
+    <color name="end_color2">#f7797d</color>
+    <color name="end_color3">#480048</color>
 </resources>

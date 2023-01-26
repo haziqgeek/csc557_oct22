@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // forward user to ViewRequestActivity
-                Intent intent = new Intent(context, ViewRequestActivity.class);
+                Intent intent = new Intent(context, ViewRequestActivityStudent.class);
                 startActivity(intent);
             }
         });

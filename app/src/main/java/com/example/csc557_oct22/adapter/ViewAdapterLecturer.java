@@ -14,25 +14,25 @@ import com.example.csc557_oct22.model.Appointment;
 import java.util.List;
 
 
-public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
+public class ViewAdapterLecturer extends RecyclerView.Adapter<ViewAdapterLecturer.ViewHolder> {
 
     /**
      * Create ViewHolder class to bind list item view
      */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
 
-        public TextView tvName;
+        public TextView tvStudentName;
         public TextView tvReason;
         public TextView tvDate;
-        public TextView tvStatus;
+        public TextView tvTime;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            tvName = (TextView) itemView.findViewById(R.id.tvName);
+            tvStudentName = (TextView) itemView.findViewById(R.id.tvStudentName);
             tvReason = (TextView) itemView.findViewById(R.id.tvReason);
             tvDate = (TextView) itemView.findViewById(R.id.tvDate);
-            tvStatus = (TextView) itemView.findViewById(R.id.tvStatus);
+            tvTime = (TextView) itemView.findViewById(R.id.tvTime);
 
             itemView.setOnLongClickListener(this);
         }
@@ -48,7 +48,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
     private Context mContext;       // activity context
     private int currentPos;         //current selected position.
 
-    public ViewAdapter(Context context, List<Appointment> listData){
+    public ViewAdapterLecturer(Context context, List<Appointment> listData){
         mListData = listData;
         mContext = context;
     }
@@ -62,7 +62,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the single item layout
-        View view = inflater.inflate(R.layout.view_list_item, parent, false);
+        View view = inflater.inflate(R.layout.view_list_item_lecturer, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(view);
@@ -74,9 +74,9 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
         // bind data to the view holder
         Appointment m = mListData.get(position);
         holder.tvReason.setText(m.getReason());
-        holder.tvName.setText(m.getLecturer().getName());
+        holder.tvStudentName.setText(m.getStudent().getName());
         holder.tvDate.setText(m.getDate());
-        holder.tvStatus.setText(m.getStatus());
+        holder.tvTime.setText(m.getStatus());
     }
 
     @Override

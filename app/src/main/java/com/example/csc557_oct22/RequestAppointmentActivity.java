@@ -267,7 +267,7 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
                             Toast.LENGTH_LONG).show();
 
                     // end this activity and forward user to BookListActivity
-                    Intent intent = new Intent(context, ViewRequestActivity.class);
+                    Intent intent = new Intent(context, ViewRequestActivityStudent.class);
                     startActivity(intent);
                     finish();
                 }

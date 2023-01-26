@@ -1,5 +1,12 @@
 package com.example.csc557_oct22;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,19 +18,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.csc557_oct22.adapter.ViewAdapter;
-import com.example.csc557_oct22.model.Appointment;
+import com.example.csc557_oct22.adapter.ViewAdapterStudent;  // do not copy this
+import com.example.csc557_oct22.model.Appointment;  // do not copy this
 import com.example.csc557_oct22.model.DeleteResponse;
-import com.example.csc557_oct22.model.SharedPrefManager;
-import com.example.csc557_oct22.model.User;
-import com.example.csc557_oct22.remote.ApiUtils;
-import com.example.csc557_oct22.remote.AppointmentService;
+import com.example.csc557_oct22.model.SharedPrefManager;  // do not copy this
+import com.example.csc557_oct22.model.User;  // do not copy this
+import com.example.csc557_oct22.remote.ApiUtils;  // do not copy this
+import com.example.csc557_oct22.remote.AppointmentService;  // do not copy this
 
 import java.util.List;
 
@@ -31,33 +32,27 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ViewRequestActivity extends AppCompatActivity {
+public class ViewRequestActivityLecturer extends AppCompatActivity {
 
     AppointmentService appointmentService;
     Context context;
-    RecyclerView viewList;
-    ViewAdapter adapter;
+    RecyclerView viewListLecturer;
+    ViewAdapterStudent adapter;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_request);
+        setContentView(R.layout.activity_view_request_lecturer);
         context = this; // get current activity context
 
         // get reference to the RecyclerView viewList
-        viewList = findViewById(R.id.viewList);
+        viewListLecturer = findViewById(R.id.viewListLecturer);
 
         //register for context menu
-        registerForContextMenu(viewList);
+        registerForContextMenu(viewListLecturer);
 
-        // update listview
-        updateListView();
-    }
 
-        /**
-         * Fetch data for ListView
-         */
-        private void updateListView() {
         // get user info from SharedPreferences
         User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
 
@@ -80,18 +75,18 @@ public class ViewRequestActivity extends AppCompatActivity {
                 List<Appointment> appointments = response.body();
 
                 // initialize adapter
-                adapter = new ViewAdapter(context, appointments);
+                adapter = new ViewAdapterStudent(context, appointments);
 
                 // set adapter to the RecyclerView
-                viewList.setAdapter(adapter);
+                viewListLecturer.setAdapter(adapter);
 
                 // set layout to recycler view
-                viewList.setLayoutManager(new LinearLayoutManager(context));
+                viewListLecturer.setLayoutManager(new LinearLayoutManager(context));
 
                 // add separator between item in the list
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewList.getContext(),
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListLecturer.getContext(),
                         DividerItemDecoration.VERTICAL);
-                viewList.addItemDecoration(dividerItemDecoration);
+                viewListLecturer.addItemDecoration(dividerItemDecoration);
             }
 
             @Override
@@ -100,15 +95,27 @@ public class ViewRequestActivity extends AppCompatActivity {
                 Log.e("MyApp:", t.getMessage());
             }
         });
+        // enable back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish(); // terminate this Activity and go back to caller
+                return true;
+        }
 
-
+        // if menu clicked not in list, call the original superclass method
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.appointment_context_menu, menu);
     }
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -131,8 +138,6 @@ public class ViewRequestActivity extends AppCompatActivity {
         intent.putExtra("appointment_id", selectedAppointment.getId());
         startActivity(intent);
     }
-
-
     /**
      * Delete appointment record. Called by contextual menu "Delete"
      * @param selectedAppointment - appointment selected by user
