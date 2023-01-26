@@ -105,8 +105,7 @@
                 android:id="@+id/spTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.75"
-                android:entries="@array/timeslot" />
+                android:layout_weight="0.75" />
         </LinearLayout>
 
         <LinearLayout

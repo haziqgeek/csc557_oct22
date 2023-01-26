@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class TimeSpinnerAdapter extends ArrayAdapter<String> {
+public class TimeSpinnerAdapter extends ArrayAdapter<CharSequence> {
     // Your sent context
     private Context context;
     // Your custom values for the spinner (User)
-    private List<String> time;
+    private List<CharSequence> time;
 
-    public TimeSpinnerAdapter(Context context, int textViewResourceId, List<String> time) {
+    public TimeSpinnerAdapter(Context context, int textViewResourceId, List<CharSequence> time) {
         super(context, textViewResourceId, time);
         this.context = context;
         this.time = time;
@@ -25,7 +25,7 @@ public class TimeSpinnerAdapter extends ArrayAdapter<String> {
     public int getCount() { return time.size(); }
 
     @Override
-    public String getItem(int position) { return time.get(position); }
+    public CharSequence getItem(int position) { return time.get(position); }
 
     @Override
     public long getItemId(int position) { return position; }

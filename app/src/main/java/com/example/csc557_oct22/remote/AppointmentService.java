@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface AppointmentService {
     @GET("api/appointment")
@@ -18,6 +19,9 @@ public interface AppointmentService {
 
     @GET("api/appointment/{id}")
     Call<Appointment> getAppointment(@Header("api-key") String api_key, @Path("id") int id);
+
+    @GET("api/appointment/?status=Approved")
+    Call<Appointment> getBookedAppointment(@Header("api-key") String api_key, @Query("lecturer_id") int lectId, @Query("date") String date, @Query("time") String time);
 
     /*** Add appointment by sending a single Appointment JSON* @return book object*/
     @POST("api/appointment")
