@@ -1,11 +1,5 @@
 package com.example.csc557_oct22;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,13 +11,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.csc557_oct22.adapter.ViewAdapter;  // do not copy this
-import com.example.csc557_oct22.model.Appointment;  // do not copy this
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.csc557_oct22.adapter.ViewAdapter;
+import com.example.csc557_oct22.model.Appointment;
 import com.example.csc557_oct22.model.DeleteResponse;
-import com.example.csc557_oct22.model.SharedPrefManager;  // do not copy this
-import com.example.csc557_oct22.model.User;  // do not copy this
-import com.example.csc557_oct22.remote.ApiUtils;  // do not copy this
-import com.example.csc557_oct22.remote.AppointmentService;  // do not copy this
+import com.example.csc557_oct22.model.SharedPrefManager;
+import com.example.csc557_oct22.model.User;
+import com.example.csc557_oct22.remote.ApiUtils;
+import com.example.csc557_oct22.remote.AppointmentService;
 
 import java.util.List;
 
@@ -50,7 +50,14 @@ public class ViewRequestActivity extends AppCompatActivity {
         //register for context menu
         registerForContextMenu(viewList);
 
+        // update listview
+        updateListView();
+    }
 
+        /**
+         * Fetch data for ListView
+         */
+        private void updateListView() {
         // get user info from SharedPreferences
         User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
 
@@ -103,7 +110,6 @@ public class ViewRequestActivity extends AppCompatActivity {
         inflater.inflate(R.menu.appointment_context_menu, menu);
     }
 
-
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         Appointment selectedAppointment = adapter.getSelectedItem();
@@ -125,6 +131,8 @@ public class ViewRequestActivity extends AppCompatActivity {
         intent.putExtra("appointment_id", selectedAppointment.getId());
         startActivity(intent);
     }
+
+
     /**
      * Delete appointment record. Called by contextual menu "Delete"
      * @param selectedAppointment - appointment selected by user
