@@ -1,11 +1,5 @@
 package com.example.csc557_oct22;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,13 +12,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.csc557_oct22.adapter.ViewAdapterStudent;  // do not copy this
-import com.example.csc557_oct22.model.Appointment;  // do not copy this
-import com.example.csc557_oct22.model.DeleteResponse;
-import com.example.csc557_oct22.model.SharedPrefManager;  // do not copy this
-import com.example.csc557_oct22.model.User;  // do not copy this
-import com.example.csc557_oct22.remote.ApiUtils;  // do not copy this
-import com.example.csc557_oct22.remote.AppointmentService;  // do not copy this
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.csc557_oct22.adapter.ViewAdapterStudent;
+import com.example.csc557_oct22.model.Appointment;
+import com.example.csc557_oct22.model.SharedPrefManager;
+import com.example.csc557_oct22.model.User;
+import com.example.csc557_oct22.remote.ApiUtils;
+import com.example.csc557_oct22.remote.AppointmentService;
 
 import java.util.List;
 
@@ -38,6 +37,7 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
     Context context;
     RecyclerView viewListLecturer;
     ViewAdapterStudent adapter;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -98,6 +98,7 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
         // enable back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -120,56 +121,20 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         Appointment selectedAppointment = adapter.getSelectedItem();
-        Log.d("MyApp", "selected "+selectedAppointment.toString());
+        Log.d("MyApp", "selected " + selectedAppointment.toString());
         switch (item.getItemId()) {
             case R.id.menu_details://should match the id in the context menu file
                 doViewDetails(selectedAppointment);
-                break;
-            case R.id.menu_delete://should match the id in the context menu file
-                doDeleteAppointment(selectedAppointment);
                 break;
         }
         return super.onContextItemSelected(item);
     }
 
     private void doViewDetails(Appointment selectedAppointment) {
-        Log.d("MyApp:", "viewing details "+selectedAppointment.toString());
+        Log.d("MyApp:", "viewing details " + selectedAppointment.toString());
         Intent intent = new Intent(context, AppointmentDetailActivity.class);
         intent.putExtra("appointment_id", selectedAppointment.getId());
         startActivity(intent);
-    }
-    /**
-     * Delete appointment record. Called by contextual menu "Delete"
-     * @param selectedAppointment - appointment selected by user
-     */
-    private void doDeleteAppointment(Appointment selectedAppointment) {
-        // get user info from SharedPreferences
-        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
-
-        // prepare REST API call
-        AppointmentService appointmentService = ApiUtils.getAppointmentService();
-        Call<DeleteResponse> call = appointmentService.deleteAppointment(user.getToken(), selectedAppointment.getId());
-
-        // execute the call
-        call.enqueue(new Callback<DeleteResponse>() {
-            @Override
-            public void onResponse(Call<DeleteResponse> call, Response<DeleteResponse> response) {
-                if (response.code() == 200) {
-                    // 200 means OK
-                    displayAlert("Appointment successfully deleted");
-
-                } else {
-                    displayAlert("Appointment failed to delete");
-                    Log.e("MyApp:", response.raw().toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DeleteResponse> call, Throwable t) {
-                displayAlert("Error [" + t.getMessage() + "]");
-                Log.e("MyApp:", t.getMessage());
-            }
-        });
     }
 
     /**
