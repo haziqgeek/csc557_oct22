@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvTime"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="100dp"
                 android:onClick="approveAppointment"
                 android:text="Approve" />
 
@@ -95,7 +95,7 @@
                 android:layout_column="0"
                 android:layout_below="@+id/tvTime"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="100dp"
                 android:onClick="declineAppointment"
                 android:text="Decline" />
         </LinearLayout>
