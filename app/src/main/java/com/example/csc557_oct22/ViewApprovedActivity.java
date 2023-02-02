@@ -76,26 +76,28 @@ public class ViewApprovedActivity extends AppCompatActivity {
                 // Get list of appointment object from response
                 List<Appointment> appointments = response.body();
 
-                List<Appointment> approvedAppointments = new ArrayList<Appointment>();
+                    if (appointments != null) {
+                        List<Appointment> approvedAppointments = new ArrayList<Appointment>();
 
-                for (Appointment appointment: appointments) {
-                    if (appointment.getLecturer().getId() == user.getId() && !appointment.getStatus().equals("New"))
-                        approvedAppointments.add(appointment);
+                        for (Appointment appointment : appointments) {
+                            if (appointment.getLecturer().getId() == user.getId() && !appointment.getStatus().equals("New"))
+                                approvedAppointments.add(appointment);
+                        }
+
+                        // initialize adapter
+                        adapter = new ViewAdapterApproved(context, approvedAppointments);
+
+                        // set adapter to the RecyclerView
+                        viewListApproved.setAdapter(adapter);
+
+                        // set layout to recycler view
+                        viewListApproved.setLayoutManager(new LinearLayoutManager(context));
+
+                        // add separator between item in the list
+                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListApproved.getContext(),
+                                DividerItemDecoration.VERTICAL);
+                        viewListApproved.addItemDecoration(dividerItemDecoration);
                 }
-
-                // initialize adapter
-                adapter = new ViewAdapterApproved(context, approvedAppointments);
-
-                // set adapter to the RecyclerView
-                viewListApproved.setAdapter(adapter);
-
-                // set layout to recycler view
-                viewListApproved.setLayoutManager(new LinearLayoutManager(context));
-
-                // add separator between item in the list
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListApproved.getContext(),
-                        DividerItemDecoration.VERTICAL);
-                viewListApproved.addItemDecoration(dividerItemDecoration);
             }
 
             @Override

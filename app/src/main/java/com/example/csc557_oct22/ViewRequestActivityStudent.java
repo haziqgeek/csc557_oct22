@@ -89,80 +89,82 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
                 // Get list of appointment object from response
                 List<Appointment> appointments = response.body();
 
-                List<Appointment> allAppointments = new ArrayList<Appointment>();
-                List<Appointment> approvedAppointments = new ArrayList<Appointment>();
-                List<Appointment> declinedAppointments = new ArrayList<Appointment>();
-                List<Appointment> newAppointments = new ArrayList<Appointment>();
+                if (appointments != null) {
+                    List<Appointment> allAppointments = new ArrayList<Appointment>();
+                    List<Appointment> approvedAppointments = new ArrayList<Appointment>();
+                    List<Appointment> declinedAppointments = new ArrayList<Appointment>();
+                    List<Appointment> newAppointments = new ArrayList<Appointment>();
 
 
-                for (Appointment appointment: appointments) {
-                    if (appointment.getStudent().getId() == user.getId()) {
-                        allAppointments.add(appointment);
-                        if (appointment.getStatus().equals("New"))
-                            newAppointments.add(appointment);
-                        else if (appointment.getStatus().equals("Approved"))
-                            approvedAppointments.add(appointment);
-                        else
-                            declinedAppointments.add(appointment);
-                    }
-                }
-
-                adapter = new ViewAdapterStudent(context, allAppointments);
-                // set adapter to the RecyclerView
-                viewListStudent.setAdapter(adapter);
-
-                // set layout to recycler view
-                viewListStudent.setLayoutManager(new LinearLayoutManager(context));
-
-                // add separator between item in the list
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
-                        DividerItemDecoration.VERTICAL);
-                viewListStudent.addItemDecoration(dividerItemDecoration);
-
-                spFilter.setOnItemSelectedListener(
-                        new AdapterView.OnItemSelectedListener() {
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                switch (position) {
-                                    case 0:
-                                        adapter = new ViewAdapterStudent(context, allAppointments);
-                                        break;
-                                    case 1:
-                                        adapter = new ViewAdapterStudent(context, newAppointments);
-                                        break;
-                                    case 2:
-                                        adapter = new ViewAdapterStudent(context, approvedAppointments);
-                                        break;
-                                    case 3:
-                                        adapter = new ViewAdapterStudent(context, declinedAppointments);
-                                        break;
-                                }
-                                // set adapter to the RecyclerView
-                                viewListStudent.setAdapter(adapter);
-
-                                // set layout to recycler view
-                                viewListStudent.setLayoutManager(new LinearLayoutManager(context));
-
-                                // add separator between item in the list
-                                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
-                                        DividerItemDecoration.VERTICAL);
-                                viewListStudent.addItemDecoration(dividerItemDecoration);
-                            }
-
-                            public void onNothingSelected(AdapterView<?> parent) {
-                                adapter = new ViewAdapterStudent(context, allAppointments);
-                                // set adapter to the RecyclerView
-                                viewListStudent.setAdapter(adapter);
-
-                                // set layout to recycler view
-                                viewListStudent.setLayoutManager(new LinearLayoutManager(context));
-
-                                // add separator between item in the list
-                                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
-                                        DividerItemDecoration.VERTICAL);
-                                viewListStudent.addItemDecoration(dividerItemDecoration);
-                            }
+                    for (Appointment appointment : appointments) {
+                        if (appointment.getStudent().getId() == user.getId()) {
+                            allAppointments.add(appointment);
+                            if (appointment.getStatus().equals("New"))
+                                newAppointments.add(appointment);
+                            else if (appointment.getStatus().equals("Approved"))
+                                approvedAppointments.add(appointment);
+                            else
+                                declinedAppointments.add(appointment);
                         }
-                );
+                    }
+
+                    adapter = new ViewAdapterStudent(context, allAppointments);
+                    // set adapter to the RecyclerView
+                    viewListStudent.setAdapter(adapter);
+
+                    // set layout to recycler view
+                    viewListStudent.setLayoutManager(new LinearLayoutManager(context));
+
+                    // add separator between item in the list
+                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
+                            DividerItemDecoration.VERTICAL);
+                    viewListStudent.addItemDecoration(dividerItemDecoration);
+
+                    spFilter.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                    switch (position) {
+                                        case 0:
+                                            adapter = new ViewAdapterStudent(context, allAppointments);
+                                            break;
+                                        case 1:
+                                            adapter = new ViewAdapterStudent(context, newAppointments);
+                                            break;
+                                        case 2:
+                                            adapter = new ViewAdapterStudent(context, approvedAppointments);
+                                            break;
+                                        case 3:
+                                            adapter = new ViewAdapterStudent(context, declinedAppointments);
+                                            break;
+                                    }
+                                    // set adapter to the RecyclerView
+                                    viewListStudent.setAdapter(adapter);
+
+                                    // set layout to recycler view
+                                    viewListStudent.setLayoutManager(new LinearLayoutManager(context));
+
+                                    // add separator between item in the list
+                                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
+                                            DividerItemDecoration.VERTICAL);
+                                    viewListStudent.addItemDecoration(dividerItemDecoration);
+                                }
+
+                                public void onNothingSelected(AdapterView<?> parent) {
+                                    adapter = new ViewAdapterStudent(context, allAppointments);
+                                    // set adapter to the RecyclerView
+                                    viewListStudent.setAdapter(adapter);
+
+                                    // set layout to recycler view
+                                    viewListStudent.setLayoutManager(new LinearLayoutManager(context));
+
+                                    // add separator between item in the list
+                                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
+                                            DividerItemDecoration.VERTICAL);
+                                    viewListStudent.addItemDecoration(dividerItemDecoration);
+                                }
+                            }
+                    );
+                }
 
             }
 
