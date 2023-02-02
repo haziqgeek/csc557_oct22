@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -10,9 +10,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="185dp"
-        android:layout_row="0"
-        android:layout_column="0"
+        android:layout_height="100dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
@@ -29,19 +27,19 @@
             android:id="@+id/tvReason"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_marginStart="5dp"
+            android:layout_alignParentTop="true"
             android:text="TextView"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvStudentName"
+            android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvReason"
             android:layout_marginStart="5dp"
+            android:layout_below="@+id/tvReason"
             android:layout_marginTop="24dp"
             android:text="TextView"
             android:textColor="@color/black"
@@ -52,8 +50,8 @@
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvName"
             android:layout_marginStart="5dp"
+            android:layout_below="@+id/tvName"
             android:layout_marginTop="48dp"
             android:text="TextView"
             android:textColor="@color/black"
@@ -61,49 +59,16 @@
             android:textStyle="bold|italic" />
 
         <TextView
-            android:id="@+id/tvTime"
+            android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvDate"
             android:layout_marginStart="5dp"
+            android:layout_below="@+id/tvDate"
             android:layout_marginTop="72dp"
             android:text="TextView"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <Button
-                android:id="@+id/btnApprove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvTime"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="72dp"
-                android:onClick="approveAppointment"
-                android:text="Approve" />
-
-            <Button
-                android:id="@+id/btnDecline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="0"
-                android:layout_below="@+id/tvTime"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="72dp"
-                android:onClick="declineAppointment"
-                android:text="Decline" />
-        </LinearLayout>
-
-
-
     </androidx.cardview.widget.CardView>
-
-
-
-</GridLayout>
+</RelativeLayout>

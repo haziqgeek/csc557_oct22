@@ -5,18 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient2"
-    tools:context=".ViewRequestActivityStudent">
-
-    <Spinner
-        android:id="@+id/spFilter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    tools:context=".ViewApprovedActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/viewListStudent"
+        android:id="@+id/viewListApproved"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/spFilter"/>
-
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

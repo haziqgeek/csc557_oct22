@@ -12,4 +12,10 @@
         <item>16:00</item>
         <item>17:00</item>
     </string-array>
+    <string-array name="filterStatus">
+        <item>All</item>
+        <item>New</item>
+        <item>Approved</item>
+        <item>Declined</item>
+    </string-array>
 </resources>

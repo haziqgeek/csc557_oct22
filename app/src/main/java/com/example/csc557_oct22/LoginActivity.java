@@ -43,7 +43,10 @@ public class LoginActivity extends AppCompatActivity {
         // the main activity
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             finish(); // stop this LoginActivity
-            startActivity(new Intent(this, MainActivity.class));
+            if (SharedPrefManager.getInstance(this).getUser().getRole().equals("student"))
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            else
+                startActivity(new Intent(getApplicationContext(), ViewRequestActivityLecturer.class));
             return;
         }
 
@@ -125,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         // forward user to MainActivity
                         finish();
-                        if (user.getRole() == "student")
+                        if (user.getRole().equals("student"))
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         else
                             startActivity(new Intent(getApplicationContext(), ViewRequestActivityLecturer.class));

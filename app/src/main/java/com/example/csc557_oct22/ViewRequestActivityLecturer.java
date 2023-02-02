@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,12 +19,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.csc557_oct22.adapter.ViewAdapterStudent;
+import com.example.csc557_oct22.adapter.ViewAdapterLecturer;
 import com.example.csc557_oct22.model.Appointment;
 import com.example.csc557_oct22.model.SharedPrefManager;
 import com.example.csc557_oct22.model.User;
 import com.example.csc557_oct22.remote.ApiUtils;
 import com.example.csc557_oct22.remote.AppointmentService;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -36,8 +38,7 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
     AppointmentService appointmentService;
     Context context;
     RecyclerView viewListLecturer;
-    ViewAdapterStudent adapter;
-
+    ViewAdapterLecturer adapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -60,7 +61,7 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
         appointmentService = ApiUtils.getAppointmentService();
 
         // execute the call. send the user token when sending the query
-        appointmentService.getAllAppointment(user.getToken()).enqueue(new Callback<List<Appointment>>() {
+        appointmentService.getNewAppointmentsByLecturer(user.getToken(), user.getId()).enqueue(new Callback<List<Appointment>>() {
             @Override
             public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
                 // for debug purpose
@@ -75,7 +76,7 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
                 List<Appointment> appointments = response.body();
 
                 // initialize adapter
-                adapter = new ViewAdapterStudent(context, appointments);
+                adapter = new ViewAdapterLecturer(context, appointments);
 
                 // set adapter to the RecyclerView
                 viewListLecturer.setAdapter(adapter);
@@ -95,8 +96,17 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
                 Log.e("MyApp:", t.getMessage());
             }
         });
-        // enable back button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // action handler for Add Book floating button
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // forward user to NewBookActivity
+                Intent intent = new Intent(context, ViewApprovedActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -104,6 +114,18 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish(); // terminate this Activity and go back to caller
+                return true;
+            case R.id.action_logout:
+                // clear the shared preferences
+                SharedPrefManager.getInstance(getApplicationContext()).logout();
+
+                // display message
+                Toast.makeText(getApplicationContext(),
+                        "You have successfully logged out.",
+                        Toast.LENGTH_LONG).show();
+                // forward to LoginActivity
+                finish();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 return true;
         }
 
@@ -155,5 +177,128 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
         alert.show();
     }
 
+    /**
+     * Called when Request New Consultation button is clicked
+     * @param v
+     */
+    public void approveAppointment(View v) {
+
+        // update the book object retrieved in onCreate with the new data. the book object
+        // already contains the id
+        Appointment appointment = adapter.getSelectedItem();
+        appointment.setStatus("Approved");
+
+        Log.d("MyApp:", "Note info: " + appointment.toString());
+
+        // get user info from SharedPreferences
+        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+
+        // send request to update the book record to the REST API
+        AppointmentService appointmentService = ApiUtils.getAppointmentService();
+        Call<Appointment> call = appointmentService.updateAppointment(user.getToken(), appointment);
+
+        Context context = this;
+        // execute
+        call.enqueue(new Callback<Appointment>() {
+            @Override
+            public void onResponse(Call<Appointment> call, Response<Appointment> response) {
+
+                // for debug purpose
+                Log.d("MyApp:", "Response: " + response.raw().toString());
+
+                // invalid session?
+                if (response.code() == 401)
+                    displayAlert("Invalid session. Please re-login");
+
+                // book updated successfully?
+                Appointment updatedAppointment = response.body();
+                if (updatedAppointment != null) {
+                    // display message
+                    Toast.makeText(context,
+                            updatedAppointment.getStudent().getName() + "'s appointment is approved.",
+                            Toast.LENGTH_LONG).show();
+
+                    // end this activity and forward user to BookListActivity
+                    Intent intent = new Intent(context, ViewRequestActivityLecturer.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    displayAlert("Failed to approve appointment.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Appointment> call, Throwable t) {
+                displayAlert("Error [" + t.getMessage() + "]");
+                // for debug purpose
+                Log.d("MyApp:", "Error: " + t.getCause().getMessage());
+            }
+        });
+    }
+    public void declineAppointment(View v) {
+
+        // update the book object retrieved in onCreate with the new data. the book object
+        // already contains the id
+        Appointment appointment = adapter.getSelectedItem();
+        appointment.setStatus("Declined");
+
+        Log.d("MyApp:", "Note info: " + appointment.toString());
+
+        // get user info from SharedPreferences
+        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+
+        // send request to update the book record to the REST API
+        AppointmentService appointmentService = ApiUtils.getAppointmentService();
+        Call<Appointment> call = appointmentService.updateAppointment(user.getToken(), appointment);
+
+        Context context = this;
+        // execute
+        call.enqueue(new Callback<Appointment>() {
+            @Override
+            public void onResponse(Call<Appointment> call, Response<Appointment> response) {
+
+                // for debug purpose
+                Log.d("MyApp:", "Response: " + response.raw().toString());
+
+                // invalid session?
+                if (response.code() == 401)
+                    displayAlert("Invalid session. Please re-login");
+
+                // book updated successfully?
+                Appointment updatedAppointment = response.body();
+                if (updatedAppointment != null) {
+                    // display message
+                    Toast.makeText(context,
+                            updatedAppointment.getStudent().getName() + "'s appointment is approved.",
+                            Toast.LENGTH_LONG).show();
+
+                    // end this activity and forward user to BookListActivity
+                    Intent intent = new Intent(context, ViewRequestActivityLecturer.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    displayAlert("Failed to approve appointment.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Appointment> call, Throwable t) {
+                displayAlert("Error [" + t.getMessage() + "]");
+                // for debug purpose
+                Log.d("MyApp:", "Error: " + t.getCause().getMessage());
+            }
+        });
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // get the menu inflater
+        MenuInflater inflater = super.getMenuInflater();
+
+        // inflate the menu using our XML menu file id, options_menu
+        inflater.inflate(R.menu.app_bar_menu, menu);
+
+        return true;
+    }
 
 }

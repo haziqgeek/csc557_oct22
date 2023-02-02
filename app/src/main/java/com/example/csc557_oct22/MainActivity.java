@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -68,5 +71,37 @@ public class MainActivity extends AppCompatActivity {
         // forward to LoginActivity
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // get the menu inflater
+        MenuInflater inflater = super.getMenuInflater();
+
+        // inflate the menu using our XML menu file id, options_menu
+        inflater.inflate(R.menu.app_bar_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_logout:
+                // clear the shared preferences
+                SharedPrefManager.getInstance(getApplicationContext()).logout();
+
+                // display message
+                Toast.makeText(getApplicationContext(),
+                        "You have successfully logged out.",
+                        Toast.LENGTH_LONG).show();
+                // forward to LoginActivity
+                finish();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                return true;
+        }
+
+        // if menu clicked not in list, call the original superclass method
+        return super.onOptionsItemSelected(item);
     }
 }

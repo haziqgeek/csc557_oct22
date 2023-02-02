@@ -13,9 +13,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.csc557_oct22.adapter.ViewAdapterStudent;  // do not copy this
@@ -25,7 +29,9 @@ import com.example.csc557_oct22.model.SharedPrefManager;  // do not copy this
 import com.example.csc557_oct22.model.User;  // do not copy this
 import com.example.csc557_oct22.remote.ApiUtils;  // do not copy this
 import com.example.csc557_oct22.remote.AppointmentService;  // do not copy this
+import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,6 +44,7 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
     Context context;
     RecyclerView viewListStudent;
     ViewAdapterStudent adapter;
+    private Spinner spFilter;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -45,6 +52,14 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_request_student);
         context = this; // get current activity context
+
+        spFilter = (Spinner) findViewById(R.id.spFilter);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(this, R.array.filterStatus, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spFilter.setAdapter(filterAdapter);
 
         // get reference to the RecyclerView viewList
         viewListStudent = findViewById(R.id.viewListStudent);
@@ -74,9 +89,25 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
                 // Get list of appointment object from response
                 List<Appointment> appointments = response.body();
 
-                // initialize adapter
-                adapter = new ViewAdapterStudent(context, appointments);
+                List<Appointment> allAppointments = new ArrayList<Appointment>();
+                List<Appointment> approvedAppointments = new ArrayList<Appointment>();
+                List<Appointment> declinedAppointments = new ArrayList<Appointment>();
+                List<Appointment> newAppointments = new ArrayList<Appointment>();
 
+
+                for (Appointment appointment: appointments) {
+                    if (appointment.getStudent().getId() == user.getId()) {
+                        allAppointments.add(appointment);
+                        if (appointment.getStatus().equals("New"))
+                            newAppointments.add(appointment);
+                        else if (appointment.getStatus().equals("Approved"))
+                            approvedAppointments.add(appointment);
+                        else
+                            declinedAppointments.add(appointment);
+                    }
+                }
+
+                adapter = new ViewAdapterStudent(context, allAppointments);
                 // set adapter to the RecyclerView
                 viewListStudent.setAdapter(adapter);
 
@@ -87,6 +118,52 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
                 DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
                         DividerItemDecoration.VERTICAL);
                 viewListStudent.addItemDecoration(dividerItemDecoration);
+
+                spFilter.setOnItemSelectedListener(
+                        new AdapterView.OnItemSelectedListener() {
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                switch (position) {
+                                    case 0:
+                                        adapter = new ViewAdapterStudent(context, allAppointments);
+                                        break;
+                                    case 1:
+                                        adapter = new ViewAdapterStudent(context, newAppointments);
+                                        break;
+                                    case 2:
+                                        adapter = new ViewAdapterStudent(context, approvedAppointments);
+                                        break;
+                                    case 3:
+                                        adapter = new ViewAdapterStudent(context, declinedAppointments);
+                                        break;
+                                }
+                                // set adapter to the RecyclerView
+                                viewListStudent.setAdapter(adapter);
+
+                                // set layout to recycler view
+                                viewListStudent.setLayoutManager(new LinearLayoutManager(context));
+
+                                // add separator between item in the list
+                                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
+                                        DividerItemDecoration.VERTICAL);
+                                viewListStudent.addItemDecoration(dividerItemDecoration);
+                            }
+
+                            public void onNothingSelected(AdapterView<?> parent) {
+                                adapter = new ViewAdapterStudent(context, allAppointments);
+                                // set adapter to the RecyclerView
+                                viewListStudent.setAdapter(adapter);
+
+                                // set layout to recycler view
+                                viewListStudent.setLayoutManager(new LinearLayoutManager(context));
+
+                                // add separator between item in the list
+                                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
+                                        DividerItemDecoration.VERTICAL);
+                                viewListStudent.addItemDecoration(dividerItemDecoration);
+                            }
+                        }
+                );
+
             }
 
             @Override
@@ -104,6 +181,18 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
             case android.R.id.home:
                 finish(); // terminate this Activity and go back to caller
                 return true;
+            case R.id.action_logout:
+                // clear the shared preferences
+                SharedPrefManager.getInstance(getApplicationContext()).logout();
+
+                // display message
+                Toast.makeText(getApplicationContext(),
+                        "You have successfully logged out.",
+                        Toast.LENGTH_LONG).show();
+                // forward to LoginActivity
+                finish();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                return true;
         }
 
         // if menu clicked not in list, call the original superclass method
@@ -116,6 +205,8 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.appointment_context_menu, menu);
+        if (!adapter.getSelectedItem().getStatus().equals("New"))
+            menu.findItem(R.id.menu_delete).setVisible(false);
     }
 
 
@@ -190,6 +281,17 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // get the menu inflater
+        MenuInflater inflater = super.getMenuInflater();
+
+        // inflate the menu using our XML menu file id, options_menu
+        inflater.inflate(R.menu.app_bar_menu, menu);
+
+        return true;
     }
 
 
