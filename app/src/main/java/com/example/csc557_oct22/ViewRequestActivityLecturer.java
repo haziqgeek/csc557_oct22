@@ -75,19 +75,21 @@ public class ViewRequestActivityLecturer extends AppCompatActivity {
                 // Get list of appointment object from response
                 List<Appointment> appointments = response.body();
 
-                // initialize adapter
-                adapter = new ViewAdapterLecturer(context, appointments);
+                // initialize
+                if (appointments != null) {
+                    adapter = new ViewAdapterLecturer(context, appointments);
 
-                // set adapter to the RecyclerView
-                viewListLecturer.setAdapter(adapter);
+                    // set adapter to the RecyclerView
+                    viewListLecturer.setAdapter(adapter);
 
-                // set layout to recycler view
-                viewListLecturer.setLayoutManager(new LinearLayoutManager(context));
+                    // set layout to recycler view
+                    viewListLecturer.setLayoutManager(new LinearLayoutManager(context));
 
-                // add separator between item in the list
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListLecturer.getContext(),
-                        DividerItemDecoration.VERTICAL);
-                viewListLecturer.addItemDecoration(dividerItemDecoration);
+                    // add separator between item in the list
+                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListLecturer.getContext(),
+                            DividerItemDecoration.VERTICAL);
+                    viewListLecturer.addItemDecoration(dividerItemDecoration);
+                }
             }
 
             @Override
