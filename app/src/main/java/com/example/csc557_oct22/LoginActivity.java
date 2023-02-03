@@ -72,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                     // do login
                     doLogin(username, password);
                     progressBar.setVisibility(ProgressBar.VISIBLE);
+                    btnLogin.setEnabled(false);
                 }
             }
         });

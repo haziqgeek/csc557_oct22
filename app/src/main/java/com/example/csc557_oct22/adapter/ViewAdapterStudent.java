@@ -91,5 +91,7 @@ public class ViewAdapterStudent extends RecyclerView.Adapter<ViewAdapterStudent.
         return null;
     }
 
-
+    public int getCurrentPos() {
+        return currentPos;
+    }
 }

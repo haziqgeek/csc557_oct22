@@ -45,6 +45,11 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
     RecyclerView viewListStudent;
     ViewAdapterStudent adapter;
     private Spinner spFilter;
+    private List<Appointment> appointments;
+    private List<Appointment> allAppointments = new ArrayList<Appointment>();
+    private List<Appointment> approvedAppointments = new ArrayList<Appointment>();
+    private List<Appointment> declinedAppointments = new ArrayList<Appointment>();
+    private List<Appointment> newAppointments = new ArrayList<Appointment>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -87,13 +92,9 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
                 }
 
                 // Get list of appointment object from response
-                List<Appointment> appointments = response.body();
+                appointments = response.body();
 
                 if (appointments != null) {
-                    List<Appointment> allAppointments = new ArrayList<Appointment>();
-                    List<Appointment> approvedAppointments = new ArrayList<Appointment>();
-                    List<Appointment> declinedAppointments = new ArrayList<Appointment>();
-                    List<Appointment> newAppointments = new ArrayList<Appointment>();
 
 
                     for (Appointment appointment : appointments) {
@@ -108,7 +109,9 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
                         }
                     }
 
-                    adapter = new ViewAdapterStudent(context, allAppointments);
+                    appointments.clear();
+                    appointments.addAll(allAppointments);
+                    adapter = new ViewAdapterStudent(context, appointments);
                     // set adapter to the RecyclerView
                     viewListStudent.setAdapter(adapter);
 
@@ -123,44 +126,28 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
                     spFilter.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                    appointments.clear();
                                     switch (position) {
                                         case 0:
-                                            adapter = new ViewAdapterStudent(context, allAppointments);
+                                            appointments.addAll(allAppointments);
                                             break;
                                         case 1:
-                                            adapter = new ViewAdapterStudent(context, newAppointments);
+                                            appointments.addAll(newAppointments);
                                             break;
                                         case 2:
-                                            adapter = new ViewAdapterStudent(context, approvedAppointments);
+                                            appointments.addAll(approvedAppointments);
                                             break;
                                         case 3:
-                                            adapter = new ViewAdapterStudent(context, declinedAppointments);
+                                            appointments.addAll(declinedAppointments);
                                             break;
                                     }
-                                    // set adapter to the RecyclerView
-                                    viewListStudent.setAdapter(adapter);
 
-                                    // set layout to recycler view
-                                    viewListStudent.setLayoutManager(new LinearLayoutManager(context));
-
-                                    // add separator between item in the list
-                                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
-                                            DividerItemDecoration.VERTICAL);
-                                    viewListStudent.addItemDecoration(dividerItemDecoration);
+                                    // notify adapter
+                                    adapter.notifyDataSetChanged();
                                 }
 
                                 public void onNothingSelected(AdapterView<?> parent) {
-                                    adapter = new ViewAdapterStudent(context, allAppointments);
-                                    // set adapter to the RecyclerView
-                                    viewListStudent.setAdapter(adapter);
 
-                                    // set layout to recycler view
-                                    viewListStudent.setLayoutManager(new LinearLayoutManager(context));
-
-                                    // add separator between item in the list
-                                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewListStudent.getContext(),
-                                            DividerItemDecoration.VERTICAL);
-                                    viewListStudent.addItemDecoration(dividerItemDecoration);
                                 }
                             }
                     );
@@ -222,6 +209,10 @@ public class ViewRequestActivityStudent extends AppCompatActivity {
                 break;
             case R.id.menu_delete://should match the id in the context menu file
                 doDeleteAppointment(selectedAppointment);
+                appointments.remove(adapter.getCurrentPos());
+                adapter.notifyItemRemoved(adapter.getCurrentPos());
+                newAppointments.remove(selectedAppointment);
+                allAppointments.remove(selectedAppointment);
                 break;
         }
         return super.onContextItemSelected(item);

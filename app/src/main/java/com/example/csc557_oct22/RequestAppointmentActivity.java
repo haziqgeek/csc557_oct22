@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -58,6 +59,7 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
 
     private String consTimeStr;
     private static String consDateStr;
+    private Button btnAddAppt;
 
     private Context context;
 
@@ -78,14 +80,16 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
             int day = c.get(Calendar.DAY_OF_MONTH);
 
             // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            DatePickerDialog dpd = new DatePickerDialog(getActivity(), this, year, month, day);
+            dpd.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            return dpd;
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             // Do something with the date chosen by the user
-
+            view.setMinDate(System.currentTimeMillis() - 1000);
             // create a date object from selected year, month and day
-            consDateStr = year + "-" + String.format("%02d", month + 1) + "-" + day;
+            consDateStr = year + "-" + String.format("%02d", month + 1) + "-" + String.format("%02d", day);
 
             // display in the label beside the button with specific date format
             tvDate.setText(consDateStr);
@@ -129,6 +133,8 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_appointment);
+
+        btnAddAppt = (Button) findViewById(R.id.btnAddAppt);
 
         spTime = (Spinner) findViewById(R.id.spTime);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -199,6 +205,8 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
             }
         });
 
+
+
     }
     //Performing action onItemSelected and onNothing selected
     @Override
@@ -234,6 +242,7 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
      * @param v
      */
     public void addNewAppointment(View v) {
+        btnAddAppt.setEnabled(false);
         // get values in form
         String reason = txtReason.getText().toString();
         User lecturer = (User) spLecturer.getSelectedItem();
@@ -252,6 +261,7 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
             public void onResponse(Call<List<Appointment>> callB, Response<List<Appointment>> response) {
                 // for debug purpose
                 Log.d("MyAppisbooked:", "Response: " + response.raw().toString());
+                btnAddAppt.setEnabled(true);
                 if(response.code() == 204)
                 {
                     Call<Appointment> call = appointmentService.addAppointment(student.getToken(), a);
@@ -272,7 +282,7 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
                             if (addedAppointment != null) {
                                 // display message
                                 Toast.makeText(context,
-                                        "Your consultation request is successfully sent to " + lecturer.getUsername() + " . ",
+                                        "Your consultation request is successfully sent to " + lecturer.getName() + " . ",
                                         Toast.LENGTH_LONG).show();
 
                                 // end this activity and forward user to BookListActivity
@@ -290,6 +300,7 @@ public class RequestAppointmentActivity extends AppCompatActivity implements Ada
                             displayAlert("Error [" + t.getMessage() + "]");
                             // for debug purpose
                             Log.d("MyApp:", "Error: " + t.getCause().getMessage());
+                            btnAddAppt.setEnabled(true);
                         }
                     });
                 }
